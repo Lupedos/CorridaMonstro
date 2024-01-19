@@ -10,6 +10,7 @@ public class CanvasScript : MonoBehaviour
     [SerializeField] public float segundos = 0;
     [SerializeField] public int minutos = 0;
     [SerializeField] TextMeshProUGUI textRounds;
+    [SerializeField] TextMeshProUGUI textMonsters;
     public GameManagerScript _GameManager;
     void Start()
     {
@@ -20,6 +21,7 @@ public class CanvasScript : MonoBehaviour
     void Update()
     {
         textRounds.text = "Round: " + _GameManager.rounds;
+        textMonsters.text = "Monsters:" + _GameManager.objetosAtivos.Count;
     }
 
     void FixedUpdate()

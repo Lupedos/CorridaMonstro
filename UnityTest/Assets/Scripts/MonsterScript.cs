@@ -8,24 +8,28 @@ public class MonsterScript : MonoBehaviour
     public bool onScream = false;
     void Start()
     {
+        
+    }
+    void OnEnable()
+    {
         Velocity = Random.Range(500,1000);
         this.GetComponent<Rigidbody2D>().AddForce(new Vector2(Velocity, 0));
     }
-
     
     void Update()
     {
-        if(GetComponent<Renderer>().isVisible)
-        {
-            onScream = true;            
-        }
-        if (onScream)
-        {
+        //if(GetComponent<Renderer>().isVisible)
+        //{
+            //onScream = true;            
+        //}
+        //if (onScream)
+        //{
             if(!GetComponent<Renderer>().isVisible)
             {
-                Destroy(gameObject,1f);
+                onScream = false;
+                this.gameObject.SetActive(false); 
             }
             
-        }
+        //}
     }
 }
