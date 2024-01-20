@@ -6,142 +6,130 @@ using UnityEngine.Pool;
 
 public class GameManagerScript : MonoBehaviour
 {
+    [Tooltip("Number of rounds")]
     public int rounds = 1;
-    public int fibonacciAtual = 1;
-    public int fibonacciPassada = 0;
-    public GameObject prefabMonster;
+    [Tooltip("Number of currentFibonacci")]
+    [SerializeField] private int currentFibonacci = 1;
+    [Tooltip("Number of previousFibonacci")]
+    [SerializeField] private int previousFibonacci = 0;
+    [Tooltip("Link to CanvasScript")]
+    [SerializeField] private CanvasScript _canvas;
+    [Tooltip("boolean to check if it is in pause between rounds")]
+    [SerializeField] private bool pause;
+    [Tooltip("All Monsters Spawned")]
+    public int monterSpawned = 0;
+    [Tooltip("Link to Script of PrefabMonster")]
+    [SerializeField] private MonsterScript monsterPrefabScript;  
+    public IObjectPool<MonsterScript> monsterPool;  
+    private bool collectionCheck = true;  
+    private int defaultCapacity = 1000;
+    private int maxSize = 10000;
+    [Tooltip("All Monsters Released")]
+    public int monstersReleased = 0;  
 
-    public List<GameObject> monsters = new List<GameObject>();
-    public CanvasScript _canvas;
-    public int lastMonstersIndex = 0;
-    public bool terminol;
-    public bool pausa;
-    public int objetosInativos;
-    public int montrinhos = 0;
-    [Tooltip("Prefab to shoot")]
-    [SerializeField] private MonsterScript monsterPrefab;
-    public IObjectPool<MonsterScript> monsterPool;
-    [SerializeField] private bool collectionCheck = true;
-
-    // extra options to control the pool capacity and maximum size
-    [SerializeField] private int defaultCapacity = 1000;
-    [SerializeField] public int maxSize = 10000;
-    public int montrinhosReleased = 0;
+    /// <summary>
+    /// Initialize the monster pool
+    /// </summary>
     private void Awake()
     {
+        
         monsterPool = new ObjectPool<MonsterScript>(CreateProjectile,
         OnGetFromPool, OnReleaseToPool,
         OnDestroyPooledObject, collectionCheck, defaultCapacity, maxSize);
     }
-    // invoked when creating an item to populate the object pool
+
+    /// <summary>
+    /// Invoked when creating an item to populate the object pool
+    /// </summary>
+    /// <returns></returns>
     private MonsterScript CreateProjectile()
     {
-        MonsterScript projectileInstance = Instantiate(monsterPrefab);
+        MonsterScript projectileInstance = Instantiate(monsterPrefabScript);
         projectileInstance.ObjectPool = monsterPool;
         return projectileInstance;
     }
 
-    // invoked when returning an item to the object pool
+    /// <summary>
+    /// Invoked when returning an item to the object pool
+    /// </summary>
+    /// <param name="pooledObject"></param>
     private void OnReleaseToPool(MonsterScript pooledObject)
     {
         pooledObject.gameObject.SetActive(false);
-
     }
 
-    // invoked when retrieving the next item from the object pool
+    /// <summary>
+    /// Invoked when retrieving the next item from the object pool
+    /// </summary>
+    /// <param name="pooledObject"></param>
     private void OnGetFromPool(MonsterScript pooledObject)
     {
         pooledObject.gameObject.SetActive(true);
     }
 
-    // invoked when we exceed the maximum number of pooled items (i.e. destroy the pooled object)
+    /// <summary>
+    /// Invoked when we exceed the maximum number of pooled items (i.e. destroy the pooled object)
+    /// </summary>
+    /// <param name="pooledObject"></param>
     private void OnDestroyPooledObject(MonsterScript pooledObject)
     {
         Destroy(pooledObject.gameObject);
     }
+    /// <summary>
+    /// Enter pause between rounds
+    /// </summary>
     void Update()
     {
-        //objetosInativos = monsterPool.CountInactive;
-        //    if (Input.GetKeyDown("space"))
-        //    {
-        //        NextRound();
-        //    }
-        if (fibonacciAtual == montrinhosReleased && !pausa)
+        if (currentFibonacci == monstersReleased && !pause)
         {
             StartCoroutine(Interval());
-            
         }
-        //    if (terminol)
-        //    {
-        //        //SpawMonster();
-        //    }
-
     }
+    /// <summary>
+    /// instantiate the monsters and Randomizes the Y-axis
+    /// </summary>
     private void FixedUpdate()
     {
-        // get a pooled object instead of instantiating
-
-
-        if (montrinhos >= fibonacciAtual)
+        // Get a pooled object instead of instantiating
+        if (monterSpawned >= currentFibonacci)
         {
             return;
         }
-        montrinhos++;
+        monterSpawned++;
         MonsterScript monsterObject = monsterPool.Get();
 
         if (monsterObject == null)
             return;
 
-        // align to gun barrel/muzzle position
+        
         int randy = UnityEngine.Random.Range(-20, 20);
         monsterObject.transform.position = new Vector2(-50, randy);
-
-
     }
+    /// <summary>
+    /// This code resets the timer and initiates another round following the Fibonacci sequence
+    /// </summary>
     void NextRound()
     {
-        
         rounds = rounds + 1;
-        fibonacciAtual = fibonacciAtual + fibonacciPassada;
-        fibonacciPassada = fibonacciAtual - fibonacciPassada;
+        currentFibonacci = currentFibonacci + previousFibonacci;
+        previousFibonacci = currentFibonacci - previousFibonacci;
         _canvas.minutos = 0;
-        _canvas.segundos = 0;
-        montrinhosReleased = 0;
-        pausa = false;
-        montrinhos = 0;
+        _canvas.seconds = 0;
+        monstersReleased = 0;
+        pause = false;
+        monterSpawned = 0;
     }
-    //void SpawMonster()
-    //{
-    //    //int objetosAtivos = Array.FindAll(monsters, obj => obj.activeSelf).Length;
-    //    //List<GameObject> objetosAtivos = monsters.FindAll(MonsterRunner => MonsterRunner.activeSelf);
-    //    //Debug.Log(objetosAtivos.Count);
-    //    if (montrinhos >= fibonacciAtual)
-    //    {
-    //        terminol = false;
-    //        return;
-    //    }
-    //    if (objetosAtivos.Count == monsters.Count)
-    //    {
-    //        GameObject newMonster = Instantiate(prefabMonster);
-    //        monsters.Add(newMonster);
-    //    }
-    //    monsters[lastMonstersIndex].SetActive(true);
-    //    int randy = UnityEngine.Random.Range(-20, 20);
-    //    monsters[lastMonstersIndex].transform.position = new Vector2(-50, randy);
-    //    montrinhos++;
-    //    //Debug.Log("foi");
-    //    //Debug.Log(monsters.Count);
-    //    lastMonstersIndex++;
-    //    if (lastMonstersIndex > monsters.Count - 1)
-    //    {
-    //        lastMonstersIndex = 0;
-    //    }
-    //}
+
+    /// <summary>
+    /// Coroutine to handle the interval between rounds
+    /// </summary>
+    /// <returns></returns>
     IEnumerator Interval()
     {
-        pausa = true;
+        pause = true;
         yield return new WaitForSeconds(1);
         NextRound();
     }
+
 
 }

@@ -2,55 +2,58 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Pool;
-
 public class MonsterScript : MonoBehaviour
 {
-    public int Velocity;
-    public bool onScream = false;
+    [Tooltip("minimum speed of 500 to 1000")]
+    [SerializeField] private int Velocity;
+    [Tooltip("boolean to check if it is visible")]
+    [SerializeField] private bool onScreem = false;
+    private GameManagerScript gameManagerScript;
     private IObjectPool<MonsterScript> objectPool;
-    public GameManagerScript gameManagerScript;
-    // public property to give the projectile a reference to its ObjectPool
-    public GameObject cam;
-
     public IObjectPool<MonsterScript> ObjectPool { set => objectPool = value; }
+    /// <summary>
+    /// Find the GameManager 
+    /// </summary>
     void Start()
     {
         gameManagerScript = GameObject.Find("GameManager").GetComponent<GameManagerScript>();
-        //cam = GameObject.Find("MainCamera");
-       
-
     }
+    /// <summary>
+    /// When it is reused, it changes its speed every time it appears on the screen 
+    /// </summary>
     void OnEnable()
     {
-        Velocity = Random.Range(1000,1000);
+        Velocity = Random.Range(500,1000);
         this.GetComponent<Rigidbody2D>().AddForce(new Vector2(Velocity, 0));
     }
-
+    /// <summary>
+    /// Code to check whether it is displayed on the screen; if it is not, it can be disabled and return to the pool.
+    /// </summary>
     void Update()
     {
-        //transform.position = new Vector3(cam.transform.position.x - 39, transform.position.y, transform.position.z);
         if (GetComponent<Renderer>().isVisible)
         {
-            onScream = true;
-            //Debug.Log(" visivel");
+            onScreem = true;
         }
-        if (onScream)
+        if (onScreem)
         {
             if (!GetComponent<Renderer>().isVisible)
             {
-                onScream = false;
+                onScreem = false;
                 StartCoroutine(TimeToDie());
-                //this.gameObject.SetActive(false);
-                Debug.Log("nao visivel");
             }
 
 
         }
     }
+    /// <summary>
+    /// After being off the screen, it waits for 1 second to be disabled.
+    /// </summary>
+    /// <returns></returns>
     IEnumerator TimeToDie()
     {
         yield return new WaitForSeconds(1);
-        gameManagerScript.montrinhosReleased++;
+        gameManagerScript.monstersReleased++;
         gameManagerScript.monsterPool.Release(this);
     }
 }

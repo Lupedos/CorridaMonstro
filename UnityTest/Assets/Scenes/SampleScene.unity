@@ -609,21 +609,21 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   rounds: 1
-  fibonacciAtual: 1
-  fibonacciPassada: 0
+  currentFibonacci: 1
+  previousFibonacci: 0
   prefabMonster: {fileID: 5555607040407023300, guid: 830a0bc3cf8abd44cabc2745de6b953e, type: 3}
   monsters:
   - {fileID: 0}
   _canvas: {fileID: 1560365164}
   lastMonstersIndex: 0
-  terminol: 1
-  pausa: 0
+  pause: 0
   objetosInativos: 0
-  montrinhos: 1
-  monsterPrefab: {fileID: 6313729736468097684, guid: 830a0bc3cf8abd44cabc2745de6b953e, type: 3}
+  monterSpawned: 0
+  monsterPrefabScript: {fileID: 6313729736468097684, guid: 830a0bc3cf8abd44cabc2745de6b953e, type: 3}
   collectionCheck: 1
   defaultCapacity: 1000
   maxSize: 10000
+  monstersReleased: 0
 --- !u!1 &976781891
 GameObject:
   m_ObjectHideFlags: 0
@@ -791,11 +791,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   textTimer: {fileID: 123079114}
-  segundos: 0
-  minutos: 0
   textRounds: {fileID: 216487692}
   textMonsters: {fileID: 976781893}
   _GameManager: {fileID: 663256727}
+  seconds: 0
+  minutos: 0
 --- !u!114 &1560365165
 MonoBehaviour:
   m_ObjectHideFlags: 0

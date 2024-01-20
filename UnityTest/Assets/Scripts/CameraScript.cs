@@ -33,18 +33,5 @@ public class CameraScript : MonoBehaviour
 
             camera.rect = rect;
         }
-        //else // add pillarbox
-        //{
-        //    float scalewidth = 1.0f / scaleheight;
-
-        //    Rect rect = camera.rect;
-
-        //    rect.width = scalewidth;
-        //    rect.height = 1.0f;
-        //    rect.x = (1.0f - scalewidth) / 2.0f;
-        //    rect.y = 0;
-
-        //    camera.rect = rect;
-        //}
     }
 }
