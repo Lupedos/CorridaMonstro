@@ -21,7 +21,7 @@ public class CanvasScript : MonoBehaviour
     void Update()
     {
         textRounds.text = "Round: " + _GameManager.rounds;
-        textMonsters.text = "Monsters:" + _GameManager.objetosAtivos.Count;
+        textMonsters.text = "Monsters:" + _GameManager.montrinhos;
     }
 
     void FixedUpdate()
